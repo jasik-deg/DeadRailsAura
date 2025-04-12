@@ -1,0 +1,25 @@
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local RunService = game:GetService("RunService")
+
+local function getClosestPlayer(range)
+    local closest, dist = nil, range or 15
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local hrp = player.Character.HumanoidRootPart
+            local magnitude = (LocalPlayer.Character.HumanoidRootPart.Position - hrp.Position).magnitude
+            if magnitude < dist then
+                dist = magnitude
+                closest = player
+            end
+        end
+    end
+    return closest
+end
+
+RunService.RenderStepped:Connect(function()
+    local target = getClosestPlayer()
+    if target and target.Character:FindFirstChild("Humanoid") then
+        target.Character.Humanoid:TakeDamage(10)
+    end
+end)
